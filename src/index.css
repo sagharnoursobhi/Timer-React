@@ -9,3 +9,35 @@
 .item-2{
   background-color: white;
 }
+
+.item{
+  margin-top: 50px;
+  height: 600px;
+}
+
+div>.container{
+  margin-top: 66px;
+  border-radius: 50px;
+  background-color: rgb(162, 11, 11);
+}
+
+.item4{
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+.item3{
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.margin{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.extra{
+  display: flex;
+  justify-content: center;
+}
