@@ -1,13 +1,81 @@
 import React from 'react'
+import moment from 'moment'
+import TimerDisplay from './components/TimerDisplay'
+import TimerConfig from './components/TimerConfig'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import MySVg4 from './MySvg4'
-import MySvg5 from './MySvg5'
-import MySvg3 from './MySvg3'
-import MySvg2 from './MySvg2'
+import StartButton from './components/StartBut';
+import PauseBut from './components/PauseBut';
+import StopBut from './components/StopBut';
+
 import MySvg1 from './MySvg1'
-import Icon from '@material-ui/core/Icon';
+import * as TimerStates from './components/TimerStates'
 class LayOut extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentTime : moment.duration( 25 , 'minutes'),
+            baseTime : moment.duration(25 , 'minutes'),
+            timerState : TimerStates.NOT_SET,
+            activePause: false,
+            timer : null,
+                    }
+
+            this.setBaseTime = this.setBaseTime.bind(this);
+            this.startTimer = this.startTimer.bind(this);
+            this.reducedTimer = this.reducedTimer.bind(this);
+            // this.pauseTimer = this.pauseTimer.bind(this);
+            this.stopTimer = this.stopTimer.bind(this);
+            this.completeTimer = this.completeTimer.bind(this);
+        }
+
+        setBaseTime(newBaseTime){
+            this.setState({
+                baseTime : newBaseTime,
+                currentTime :newBaseTime,
+            })
+        }
+
+        startTimer(){
+            this.setState({
+                timerState : TimerStates.RUNNING,
+                timer : setInterval(this.reducedTimer, 1000),
+                activePause:true,
+            });
+        }
+
+        reducedTimer(){
+            const newTime = moment.duration(this.state.currentTime);
+            newTime.subtract(1 , 'second');
+            this.setState({
+                currentTime: newTime,
+            })
+        }
+
+        // pauseTimer(){
+        //     this.setState({
+        //         timerState: TimerStates.NOT_SET,
+        //         activePause :false,
+        //         timer: setInterval(this.reducedTimer, 1000),
+        //     })
+        // }
+
+        stopTimer(){
+            if(this.state.timer){
+                clearInterval(this.state.timer);
+            }
+            this.setState({
+                timerState: TimerStates.NOT_SET,
+                timer : null,
+                currentTime : moment.duration(this.state.baseTime)
+            })
+        }
+
+        completeTimer(){
+
+        }
+
     render(){
         return( <>
                     <div className="container border border-dark">
@@ -19,26 +87,31 @@ class LayOut extends React.Component{
                                 <MySvg1/>
                             </div>
                             <div className="item3 col-12">
-                                <h3 className="text-white">Time Tracking</h3>
+                                <TimerDisplay currentTime={this.state.currentTime}/>
                             </div>
                             <div className="item4 col-12 ">
-                                <div className="col-2 d-flex justify-content-center align-items-center"><input type="number" name="hour" placeholder="enter hours"/></div>
-                                <div className="col-2 d-flex justify-content-center align-items-center"><input type="number" name="hour" placeholder="enter minutes"/></div>
-                                <div className="col-2 d-flex justify-content-center align-items-center"><input type="number" name="hour" placeholder="enter seconds"/></div>
+                                {
+                                    (this.state.timerState !== TimerStates.RUNNING)
+                                    &&
+                                    <TimerConfig 
+                                    baseTime ={this.state.baseTime}
+                                    setBaseTime={this.setBaseTime}
+                                    />
+                            }
                             </div>
                         </div>
                         <div className="row margin">
                             <div className="item5 col-3 extra">
-                                <MySvg2/>
+                                <StartButton startTimer={this.startTimer}/>
                             </div>
                             <div className="item6 col-3 extra">
-                                <MySvg3/>
+                                <PauseBut pauseTimer={this.stopTimer}/>
                             </div>
                             <div className="item7 col-3 extra">
-                                <MySVg4/>
+                                
                             </div>
                             <div className="item8 col-3 extra">
-                                <MySvg5/>
+                                <StopBut stopTimer={this.stopTimer}/>
                             </div>
                         </div>
                     </div> 
